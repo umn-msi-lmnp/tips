@@ -79,7 +79,8 @@ echo "[$(date)] Script start."
 Note a few things:
 
 - A `THREADS` variable is created that holds the number of threads the slurm job requested (i.e. `SLURM_CPUS_PER_TASK`), or if it's not currently running a slurm job, `THREADS` is set to `1`. This allows for easy and uniform access (whether running a job or not) to the number of threads available for the script.
-- If an error occurs,
+- If an error occurs, the rlang::entrace function will report more details and base R.
+- Set the mc.cores option to be the same as your slurm job, or 1 if not a slurm job.
 
 ```
 #!/usr/bin/env Rscript
