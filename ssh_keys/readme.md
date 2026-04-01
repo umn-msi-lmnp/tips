@@ -92,42 +92,15 @@ We need to add our public key to the `~/.ssh/authorized_keys` file that is locat
 
 You can specify additional `ssh` settings for your connection using an ssh config file. Most of these settings can also be used on the command line with flags.
 
-- Create an ssh config file on your Mac
+Create an ssh config file on your Mac:
 
-  ```bash
-  (local)$ vim ~/.ssh/config
-  ```
+```bash
+(local)$ vim ~/.ssh/config
+```
 
-  Copy and paste the following parameters inside this file. The GitHub host block is optional but recommended to avoid sending unnecessary X11/TTY options to GitHub. The MSI block ensures MSI hosts use your MSI key.
+Copy and paste the following parameters inside this file. The GitHub host block is optional but recommended to avoid sending unnecessary X11/TTY options to GitHub. The MSI block ensures MSI hosts use your MSI key.
 
-  ```sshconfig
-# ---------------------------------------------------------------------
-# Notes
-# ---------------------------------------------------------------------
-
-# This config file is designed for OpenSSH (a fork of SSH1).
-
-# SSH options supplied on the command line take precedence over the config
-# keywords/values provided below and will override them. You can also
-# specify these keywords/values on the command with the "-o Keyword
-# Value" syntax. Options provided here take precedence over options set
-# in the global /etc/ssh_config file.
-
-# Multiple matches: Which applies? All matching sections apply and
-# if the same keyword is set in multiple matching sections, the earliest
-# value takes precedence (for OpenSSH/SSH1).
-
-# Each host-related stanza is delimited by the word Host or Match. Indentation of keywords
-# or newlines does not matter.
-
-# Lines beginning with a hash # are considered comments and comments are restricted to
-# their own line (i.e. they cannot start after keyword/value pairs on the same line).
-
-
-# ---------------------------------------------------------------------
-# Options
-# ---------------------------------------------------------------------
-
+```ssh
 Host *github*
     ForwardX11 no
     RequestTTY no
@@ -139,21 +112,16 @@ Host *.msi.umn.edu
 Host *
     GatewayPorts no
     StrictHostKeyChecking ask
-    # following line is equivalent to -A on command line
     ForwardAgent yes
-    # following line is equivalent to -X on the command line
     ForwardX11 yes
-    # following line is equivalent to -Y on the command line
     ForwardX11Trusted yes
     ServerAliveInterval 30
     ServerAliveCountMax 60
     NoHostAuthenticationForLocalhost yes
-    # This will be where your xauth is located (try `which xauth`)
     XAuthLocation /usr/bin/xauth
-    # following line is equivalent to -C on command line
     Compression yes
     TCPKeepAlive no
-  ```
+```
 
 ### Add your private key to your Mac's "Keychain" app
 
@@ -220,6 +188,18 @@ Host *
 
   ```bash
   (agate.msi.umn.edu)$ ssh agate
+  ```
+
+- Test your GitHub SSH authentication from your local machine.
+
+  ```bash
+  (local)$ ssh -T git@github.com
+  ```
+
+- Test your GitHub SSH authentication from Agate (using forwarded agent).
+
+  ```bash
+  (agate.msi.umn.edu)$ ssh -T git@github.com
   ```
 
 ## References
