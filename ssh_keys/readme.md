@@ -37,12 +37,11 @@ This only needs to be done once -- alternatively, you can use an existing key-pa
 - Create two new key-pairs with `ssh-keygen`:
 
   ```bash
-  (local)$ cd ~
   (local)$ ssh-keygen -t ed25519 -a 100 -f ~/.ssh/id_ed25519_msi
   (local)$ ssh-keygen -t ed25519 -a 100 -f ~/.ssh/id_ed25519_github
   ```
 
-- Enter passphrase: Use a long passphrase (it can contain spaces and ideally would not use standard dictionary words). We'll set this up so you will NOT need to type the passphrase every time you ssh to a host. If you're using a Mac, we'll add your passphrase to your macOS-Keychain, so you will not need to type the passphrase after reboots either!
+- Enter passphrase: Use a long passphrase (it can contain spaces and ideally would not use standard dictionary words). We'll set this up so you will NOT need to type the passphrase every time you ssh to a host. If you're using a Mac, we'll add your passphrase to your macOS-Keychain, so you will not need to type the passphrase after reboots either! You should still remember or save this passphrase in private place.
 
   ```bash
   (local)$ XXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -73,17 +72,17 @@ We need to add our public key to the `~/.ssh/authorized_keys` file that is locat
 
   # Open the authorized keys file and edit
   (agate.msi.umn.edu)$ vim ~/.ssh/authorized_keys
-  # Paste your clipboard text at the end of this file.
+  # Paste your clipboard text to a new line at the end of this file.
   # Press `i` to enter INSERT mode
   # CMD-v to paste the text into the file
   # Press ESC to exit INSERT mode
   # Press `:wq` to write and quit vim
   ```
 
-- Or use the ssh copy tool:
+- Or use the ssh copy tool. This approach will ask for your UMN password on the command line, and then use DUO. Running `ssh -s` will use SFTP mode, which avoids the fragile shell/stdin path and often fixes hangs.
 
   ```bash
-  (local)$ ssh-copy-id -i ~/.ssh/id_ed25519_msi.pub USERNAME@agate.msi.umn.edu
+  (local)$ ssh-copy-id -s -i ~/.ssh/id_ed25519_msi.pub USERNAME@agate.msi.umn.edu
   ```
 
 ## Optimize your `ssh` connection
@@ -98,7 +97,7 @@ Create an ssh config file on your Mac:
 (local)$ vim ~/.ssh/config
 ```
 
-Copy and paste the following parameters inside this file. The GitHub host block is optional but recommended to avoid sending unnecessary X11/TTY options to GitHub. The MSI block ensures MSI hosts use your MSI key.
+Copy and paste the following parameters inside this file. The GitHub host block is recommended to avoid sending unnecessary X11/TTY options to GitHub. The MSI block ensures MSI hosts use your MSI key. Find your Mac-specific `xauth` path program by running `which xauth` -- then use that path in your config file. 
 
 ```ssh
 Host *github*
@@ -174,6 +173,22 @@ Host *
     ForwardX11Trusted yes
     ServerAliveInterval 30
     ServerAliveCountMax 60
+```
+
+## Add your GitHUb key to github.com
+
+In order to connect to github.com, you need to add your public key to the website. 
+
+- Visit [https://github.com/settings/keys](https://github.com/settings/keys)
+- Click the button to add a New SSH key
+- Provide the name of the key (e.g. id_ed25519_github)
+- Key type should be: Authentication Key
+- Copy your public key to the web form and click Add SSH Key
+
+To find your public key:
+
+```bash
+(local)$ cat ~/.ssh/id_ed25519_github.pub
 ```
 
 ## Test the connection using your key
