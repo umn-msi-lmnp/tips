@@ -1,10 +1,10 @@
 # How to use SSH Keys on MSI systems
 
-Todd Knutson
+_By Todd Knutson_
 
 ## Introduction
 
-When connecting to remote systems using an `ssh` key, instead of a password, is more secure and makes connecting easier after set up. Everything in this document was adapted from various online sources. Thus, the content here will be very specific to how I set up my keys to work with MSI systems.
+Connecting to remote systems with an `ssh` key (instead of a password) is more secure and makes connecting easier after setup. Everything in this document was adapted from various online sources. Thus, the content here is specific to how I set up my keys to work with MSI systems.
 
 ### What computer are you talking about?
 
@@ -12,13 +12,13 @@ When working on multiple computers/hosts, it can be confusing to know where thes
 
 Below indicates the command prompt for your local laptop (e.g. running macOS):
 
-```
+```bash
 (local)$
 ```
 
-Below indicates the command prompt for a MSI HPC login node:
+Below indicates the command prompt for an MSI HPC login node:
 
-```
+```bash
 (agate.msi.umn.edu)$
 ```
 
@@ -26,115 +26,148 @@ Below indicates the command prompt for a MSI HPC login node:
 
 To use MSI systems, you'll need to be on campus or connected to the UMN network using the VPN (split tunnel is fine). Below is a link to information about setting up a VPN connection from UMN OIT. The "AnyConnect" software method seems to work well.
 
-- [https://it.umn.edu/service-details/virtual-private-network-vpn](https://it.umn.edu/service-details/virtual-private-network-vpn)
+- <https://it.umn.edu/service-details/virtual-private-network-vpn>
 
 ## Create a key-pair
 
-This only needs to be done once -- alternatively, you can use an existing key-pair that you control. I have created a single key-pair that is stored on my local Mac computer (in the `~/.ssh` directory) to access multiple servers. I like to name my key files by combining the default name (id_rsa) with a unique value (mykey1): "id_rsa_mykey1". This allows me to keep track of various keys if I ever need to create new ones or use multiple keys. **NOTE: if you specify a key filename that is not the default (i.e. not `id_rsa`, or `id_ecdsa`, `id_ed25519`) you must provide the path to your key when running ssh commands (via the command line, with option `-i keyfilename`, or via your ssh config `IdentityFile` opition).**
+This only needs to be done once -- alternatively, you can use an existing key-pair that you control. I use keys stored on my local Mac computer (in the `~/.ssh` directory). It is often helpful to keep separate keys for different services (for example one key for MSI and one key for GitHub) so access can be managed independently. In this guide, we use `id_ed25519_msi` and `id_ed25519_github`.
 
-- Create a new key-pair by starting the interactive program: `ssh-keygen`:
+> Note: since these are custom filenames (not the default `id_ed25519`), you must provide the path to your key via the command line (`-i`) or your ssh config (`IdentityFile`).
 
-  ```
-  (local)$ cd $HOME
-  (local)$ ssh-keygen -b 4096 -f $HOME/.ssh/id_rsa_mykey1
+- Create two new key-pairs with `ssh-keygen`:
+
+  ```bash
+  (local)$ cd ~
+  (local)$ ssh-keygen -t ed25519 -a 100 -f ~/.ssh/id_ed25519_msi
+  (local)$ ssh-keygen -t ed25519 -a 100 -f ~/.ssh/id_ed25519_github
   ```
 
 - Enter passphrase: Use a long passphrase (it can contain spaces and ideally would not use standard dictionary words). We'll set this up so you will NOT need to type the passphrase every time you ssh to a host. If you're using a Mac, we'll add your passphrase to your macOS-Keychain, so you will not need to type the passphrase after reboots either!
 
-  ```
+  ```bash
   (local)$ XXXXXXXXXXXXXXXXXXXXXXXXXXX
   ```
 
 - Add a comment to the key (which will help you find it later). I just use the key name:
 
-  ```
-  (local)$ ssh-keygen -f $HOME/.ssh/id_rsa_mykey1 -o -c -C "id_rsa_mykey1"
+  ```bash
+  (local)$ ssh-keygen -f ~/.ssh/id_ed25519_msi -o -c -C "id_ed25519_msi"
+  (local)$ ssh-keygen -f ~/.ssh/id_ed25519_github -o -c -C "id_ed25519_github"
   ```
 
 ## Copy your public key to MSI login host
 
-Basically, we need to add our public key to the `$HOME/.ssh/authorized_keys` file that is located on the MSI server in your home .ssh directory. There are a multiple ways to do this. Below are two options:
+We need to add our public key to the `~/.ssh/authorized_keys` file that is located on the MSI server in your home `.ssh` directory. There are multiple ways to do this. Below are two options:
 
-- Copy/paste the text from your public key on your local Mac, to the authorized_keys on the host.
+- Copy/paste the text from your public key on your local Mac to the `authorized_keys` file on the MSI host.
 
-  ```
+  ```bash
   # On your local Mac:
   # print the public key using cat function
   # highlight text
   # copy the entire line to your clipboard
-  (local)$ cat $HOME/.ssh/id_rsa_mykey1.pub
-
-
+  (local)$ cat ~/.ssh/id_ed25519_msi.pub
+  
   # Log into MSI host
-  (local)$ ssh USER@agate.msi.umn.edu
+  (local)$ ssh USERNAME@agate.msi.umn.edu
 
-  # Open the authorized keys file
-  (agate.msi.umn.edu)$ nano $HOME/.ssh/authorized_keys
-
+  # Open the authorized keys file and edit
+  (agate.msi.umn.edu)$ vim ~/.ssh/authorized_keys
   # Paste your clipboard text at the end of this file.
-  # Save (Ctrl - X)
-
+  # Press `i` to enter INSERT mode
+  # CMD-v to paste the text into the file
+  # Press ESC to exit INSERT mode
+  # Press `:wq` to write and quit vim
   ```
 
 - Or use the ssh copy tool:
 
-  ```
-  (local)$ ssh-copy-id -i $HOME/.ssh/id_rsa_mykey1 USER@agate.msi.umn.edu
-
+  ```bash
+  (local)$ ssh-copy-id -i ~/.ssh/id_ed25519_msi.pub USERNAME@agate.msi.umn.edu
   ```
 
 ## Optimize your `ssh` connection
 
-You can specify additional `ssh` settings for your connection using a ssh config file.
+### Your local Mac ssh config
+
+You can specify additional `ssh` settings for your connection using an ssh config file. Most of these settings can also be used on the command line with flags.
 
 - Create an ssh config file on your Mac
 
-  ```
-  (local)$ nano ~/.ssh/config
-  ```
-
-  Copy and paste the following parameters inside this file. Specify the filename of your IdentityFile (i.e. your private key file created above). Then save.
-
-  ```
-  Host *github*
-      ForwardX11 no
-
-  Host *
-      GatewayPorts no
-      StrictHostKeyChecking ask
-      # following line is equivalent to -A on command line
-      ForwardAgent yes
-      # following line is equivalent to -X on the command line
-      ForwardX11 yes
-      # following line is equivalent to -Y on the command line
-      ForwardX11Trusted yes
-      # following line is equivalent to -t on command line
-      RequestTTY force
-      ServerAliveInterval 15
-      ServerAliveCountMax 28800
-      AddKeysToAgent yes
-      UseKeychain yes
-      # following line is the path to your private key
-      IdentityFile ~/.ssh/id_rsa_mykey1
-      NoHostAuthenticationForLocalhost yes
-      # make sure this is correct on your system
-      XAuthLocation /opt/X11/bin/xauth
-      # following line is equivalent to -C on command line
-      Compression yes
+  ```bash
+  (local)$ vim ~/.ssh/config
   ```
 
-## Add your private key to your Mac's "Keychain" app
+  Copy and paste the following parameters inside this file. The GitHub host block is optional but recommended to avoid sending unnecessary X11/TTY options to GitHub. The MSI block ensures MSI hosts use your MSI key.
 
-- This will allow you to "not" enter your ssh key passphrase every time you connect (it should even prevent you from entering your ssh passphrase after reboots).
+  ```sshconfig
+# ---------------------------------------------------------------------
+# Notes
+# ---------------------------------------------------------------------
 
+# This config file is designed for OpenSSH (a fork of SSH1).
+
+# SSH options supplied on the command line take precedence over the config
+# keywords/values provided below and will override them. You can also
+# specify these keywords/values on the command with the "-o Keyword
+# Value" syntax. Options provided here take precedence over options set
+# in the global /etc/ssh_config file.
+
+# Multiple matches: Which applies? All matching sections apply and
+# if the same keyword is set in multiple matching sections, the earliest
+# value takes precedence (for OpenSSH/SSH1).
+
+# Each host-related stanza is delimited by the word Host or Match. Indentation of keywords
+# or newlines does not matter.
+
+# Lines beginning with a hash # are considered comments and comments are restricted to
+# their own line (i.e. they cannot start after keyword/value pairs on the same line).
+
+
+# ---------------------------------------------------------------------
+# Options
+# ---------------------------------------------------------------------
+
+Host *github*
+    ForwardX11 no
+    RequestTTY no
+    IdentityFile ~/.ssh/id_ed25519_github
+
+Host *.msi.umn.edu
+    IdentityFile ~/.ssh/id_ed25519_msi
+
+Host *
+    GatewayPorts no
+    StrictHostKeyChecking ask
+    # following line is equivalent to -A on command line
+    ForwardAgent yes
+    # following line is equivalent to -X on the command line
+    ForwardX11 yes
+    # following line is equivalent to -Y on the command line
+    ForwardX11Trusted yes
+    ServerAliveInterval 30
+    ServerAliveCountMax 60
+    NoHostAuthenticationForLocalhost yes
+    # This will be where your xauth is located (try `which xauth`)
+    XAuthLocation /usr/bin/xauth
+    # following line is equivalent to -C on command line
+    Compression yes
+    TCPKeepAlive no
   ```
-  ssh-add -K ~/.ssh/id_rsa_mykey1
+
+### Add your private key to your Mac's "Keychain" app
+
+- This allows you to avoid entering your ssh key passphrase every time you connect (including after reboots).
+
+  ```bash
+  ssh-add -K ~/.ssh/id_ed25519_msi
+  ssh-add -K ~/.ssh/id_ed25519_github
   ssh-add -A
   ```
 
 - You can do this automatically every time you reboot by entering the following to your Mac's `~/.bashrc` file:
 
-  ```
+  ```bash
   # ---------------------------------------------------------------------
   # Start the ssh agent
   # ---------------------------------------------------------------------
@@ -148,7 +181,8 @@ You can specify additional `ssh` settings for your connection using a ssh config
       then
           # Load your identities.
           echo "Adding IDs to ssh-agent"
-          ssh-add -K ~/.ssh/id_rsa_mykey1
+          ssh-add -K ~/.ssh/id_ed25519_msi
+          ssh-add -K ~/.ssh/id_ed25519_github
           ssh-add -A
       else
           # echo "Not adding keys to ssh-agent"
@@ -157,21 +191,38 @@ You can specify additional `ssh` settings for your connection using a ssh config
   fi
   ```
 
+### Your MSI ssh config
+
+Keep your MSI-side `~/.ssh/config` minimal: you usually do not need to specify any `IdentityFile` entries on MSI because your local `ssh-agent` is forwarded after you connect.
+
+```sshconfig
+Host *github*
+    ForwardX11 no
+    RequestTTY no
+
+Host *
+    ForwardAgent yes
+    ForwardX11 yes
+    ForwardX11Trusted yes
+    ServerAliveInterval 30
+    ServerAliveCountMax 60
+```
+
 ## Test the connection using your key
 
-- If you specified your your ssh private key (IdentityFile) in your ssh config file (you don't need to specify it again on the command line). In addition, since we loaded your private key (IdentityFile) into the `ssh-agent` using the `ssh-add` commands, _you should "not" need to specify your private key on the command line, or type your passphrase!_
+- If you specified your ssh private key (IdentityFile) in your ssh config file, you do not need to specify it again on the command line. In addition, since we loaded your private key (IdentityFile) into the `ssh-agent` using `ssh-add`, _you should not need to specify your private key on the command line or type your passphrase._
 
-  ```
-  (local)$ ssh USER@agate.msi.umn.edu
+  ```bash
+  (local)$ ssh USERNAME@agate.msi.umn.edu
   ```
 
 - Hop to other MSI nodes. Since we are using the `ssh-agent` to forward your key, you should not need to enter your passphrase when connecting to other nodes at MSI.
 
-  ```
+  ```bash
   (agate.msi.umn.edu)$ ssh agate
   ```
 
 ## References
 
-[MSI - How to set up ssh keys](https://www.msi.umn.edu/support/faq/how-do-i-setup-ssh-keys)  
-[Lean Crew Blog](https://leancrew.com/all-this/2017/02/ssh-keys/)
+- [MSI - How to set up ssh keys](https://www.msi.umn.edu/support/faq/how-do-i-setup-ssh-keys)
+- [Lean Crew Blog](https://leancrew.com/all-this/2017/02/ssh-keys/)
