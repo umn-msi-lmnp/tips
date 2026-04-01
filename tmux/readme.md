@@ -40,20 +40,19 @@ hostname
 
 After connecting to the MSI HPC login node, load tmux. MSI provides tmux version 2.7 at `/bin/tmux` by default.
 
-I also have a personal build of tmux 3.5, but it is private and not shareable. If you want a newer version, build and install your own copy in your own software space.
+I also have a personal build of `tmux 3.5`, but it is private and not shareable outside the `lmnp` project space. If you want to use a newer version, you can build and install your own copy somewhere accessible.
 
 ```bash
 /bin/tmux -V
 # tmux 2.7
 ```
 
-If you maintain your own tmux build, add your install path to `PATH` (for example from your `~/.bashrc`) so your preferred `tmux` is found first.
+If you maintain your own tmux build, add your install path to `PATH` so your preferred `tmux` is found first. For example:
 
 ```bash
-export PATH="/projects/standard/lmnp/USERNAME/software/modules/tmux/VERSION/build/bin:$PATH"
+export PATH="/projects/standard/PROJECT/path/to/tmux/bin:$PATH"
 ```
 
-Alternatively, install your own version of tmux if you need newer features than `/bin/tmux` provides.
 
 ## Start a tmux session
 
