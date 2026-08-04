@@ -4,7 +4,7 @@ This repo contains various scripts or "help" files that might be useful for sett
 
 The local repo is located here:
 
-    /home/lmnp/knut0297/software/tips
+    /project/standard/lmnp/tips
 
 
 
@@ -14,6 +14,27 @@ Connecting to MSI resources can be pretty quick and easy. Click the link for my 
 
 
 [MSI access](access_msi/readme.md)
+
+
+## OpenCode and local AI models
+
+You can run OpenCode on MSI Agate while sending prompts to a local Ollama model running on your MacBook through an SSH reverse tunnel.
+
+[OpenCode with local Ollama models](opencode_local_models/readme.md)
+
+
+## OpenCode and UMN Gemini models
+
+You can run OpenCode on MSI Agate with the UMN-provided Google Gemini models.
+
+[OpenCode with UMN Gemini models](opencode_gemini/readme.md)
+
+
+## VS Code on MSI
+
+VS Code can be used as a local editor while connecting to MSI systems for remote development.
+
+[VS Code HPC guide](vscode_guide/vscode-hpc-guide.md)
 
 
 
@@ -39,6 +60,20 @@ I use *GNU Screen* or *tmux* to manage my ssh connections to MSI. This way, if m
 I like to create reports using R Markdown syntax. These files can be rendered using R and other software on MSI systems. 
 
 [R Markdown example](rmarkdown/readme.md)
+
+
+## Python environments
+
+Python environments help keep analysis software and package versions organized.
+
+[Python environments example](python_envs/readme.md)
+
+
+## Sharing data
+
+These notes describe ways to share data with collaborators.
+
+[Share data example](share_data/readme.md)
 
 
 
@@ -76,6 +111,4 @@ I use a tool called `Krona` to examine disk usage in a fun way!
 I use `trap` statements and a few other commands at the beginning of my shell scripts for easy reporting or monitoring purposes.
 
 [Script reporting example](script_reporting/readme.md)
-
-
 
