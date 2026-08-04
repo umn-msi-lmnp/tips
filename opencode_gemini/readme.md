@@ -20,7 +20,7 @@ To run OpenCode with the UMN Gemini models, we need to:
 - Sign in with UMN SSO & Duo
 - Create a new Google Cloud Project:
 	- Click on the *projects-name* box near the top of the page, and then click "New Project" (or, just click: [https://console.cloud.google.com/projectcreate](https://console.cloud.google.com/projectcreate))
-	- Enter a project name (do not use spaces, use hyphens for delimiter). For example: `USERNAME-gemini-cli`
+	- Enter a project name (do not use spaces, use hyphens for delimiter). For example: `USERNAME-gemini`
 	- Enter organization name: `umn.edu` (the default)
 	- Enter parent resource: `umn.edu` (the default)
 	- Click: Create
@@ -59,9 +59,9 @@ oc
 
 
 - Create or edit the opencode config file: `~/.config/opencoode/opencode.json`
-- For example, the following `opencode.json` file includes the opencode-gemini plugin, and lists my Google Cloud Project ID (i.e. replace `MY_GOOGLE_PROJECT_ID` with your projectId from above):
+- For example, the following `opencode.json` file includes the opencode-gemini plugin, and provides your Google Cloud Project ID defined above (e.g. `USERNAME-gemini-cli`):
 
-```{json}
+```json
 {
   "$schema": "https://opencode.ai/config.json",
   "autoupdate": false,
@@ -78,7 +78,7 @@ oc
   "provider": {
     "google": {
       "options": {
-        "projectId": "MY_GOOGLE_PROJECT_ID"
+        "projectId": "USERNAME-gemini-cli"
       }
     }
   }
