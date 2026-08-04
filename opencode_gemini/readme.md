@@ -38,13 +38,18 @@ To run OpenCode with the UMN Gemini models, we need to:
 ## Install OpenCode
 
 - Open a terminal, ssh to MSI's agate (login or compute node)
-- You can load my version of opencode:
+- You can load my version of opencode
+- After loading my version, the standard `opencode` executable, and a `oc` wrapper executable will be available in your PATH
+    - the `oc` wrapper is preferred because it handles the NFS (VAST) filesystem better without crashing, and if your OpenCode session crashes or your slurm job ends, it saves the session info to your personal ~/.local/opencode/session_backups/ dir 
 
 ```
 module load /projects/standard/lmnp/knut0297/software/modulesfiles/opencode/1.18.4
+```
 
-# Run the tool (it might take a few seconds to load the first time)
-opencode
+Run the tool (it might take a few seconds to load the first time):
+
+```
+oc
 ```
 
 - Alternatively, you can install it yourself. [This is how I installed it](https://github.com/umn-msi-lmnp/knut0297_modules_install_notes/blob/main/opencode_1.15.13_install_notes.slurm).
