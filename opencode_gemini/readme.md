@@ -50,7 +50,9 @@ Run the tool (it might take a few seconds to load the first time):
 
 ```
 oc
+# you can exit the program by typing :q<return> or ctrl-c
 ```
+ 
 
 - Alternatively, you can install it yourself. [This is how I installed it](https://github.com/umn-msi-lmnp/knut0297_modules_install_notes/blob/main/opencode_1.15.13_install_notes.slurm).
 
