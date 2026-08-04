@@ -1,4 +1,25 @@
 # *Up and Running* with OpenCode and Local Ollama Models
+<!-- mtoc-start -->
+
+* [Introduction](#introduction)
+* [Install Ollama on Your Mac](#install-ollama-on-your-mac)
+* [Download a Model](#download-a-model)
+* [Model Recommendations](#model-recommendations)
+* [Start the Reverse SSH Tunnel](#start-the-reverse-ssh-tunnel)
+* [Security Considerations](#security-considerations)
+* [Use a SLURM Compute Node](#use-a-slurm-compute-node)
+  * [Staff Login Side Note](#staff-login-side-note)
+* [Load OpenCode on Agate or the Compute Node](#load-opencode-on-agate-or-the-compute-node)
+* [Configure OpenCode](#configure-opencode)
+* [Run OpenCode](#run-opencode)
+* [Troubleshooting](#troubleshooting)
+  * [OpenCode says it cannot connect to Ollama](#opencode-says-it-cannot-connect-to-ollama)
+  * [I opened a second Agate shell and it does not work](#i-opened-a-second-agate-shell-and-it-does-not-work)
+  * [OpenCode shows a model, but the request fails](#opencode-shows-a-model-but-the-request-fails)
+  * [The model is too slow or uses too much memory](#the-model-is-too-slow-or-uses-too-much-memory)
+  * [The model is answering, but coding quality is not good enough](#the-model-is-answering-but-coding-quality-is-not-good-enough)
+
+<!-- mtoc-end -->
 
 ## Introduction
 
