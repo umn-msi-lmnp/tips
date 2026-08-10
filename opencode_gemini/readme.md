@@ -104,7 +104,9 @@ opencode auth login
 	- Accept the terms
 	- Then it will appear to have failed, returning a "Can't connect to local server" message. That's OK -- it worked!
 	- Copy the URL of the "failed" webpage, it should start with "localhost..."
-	- Paste the URL back into your HPC terminal, where is says: Paste the authorization code here:
+	- Paste the URL back into your HPC terminal, where is says: "Paste the authorization code here:"
+
+ ![Successful URL image](./local-host-url.png)
 
 
 ## Run a Gemini model
