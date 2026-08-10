@@ -111,5 +111,5 @@ opencode auth login
 
 - Run `oc` and type `/models` to bring up the models list
 - Search "Gemini" to see the available models, and choose `Gemini 2.5 Pro`
-- Test a prompt: `hellow world`
+- Test a prompt: `hello world`
 - If you get an error, let me know (Todd Knutson, knut0297@umn.edu) and we'll get is resolved!
