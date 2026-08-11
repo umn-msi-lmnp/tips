@@ -60,7 +60,7 @@ oc
 ## Configure OpenCode
 
 
-- Create or edit the opencode config file: `~/.config/opencoode/opencode.json`
+- Create or edit the opencode config file: `~/.config/opencode/opencode.json`
 - For example, the following `opencode.json` file includes the opencode-gemini plugin, and provides your Google Cloud Project ID defined above (e.g. `USERNAME-gemini-cli`):
 
 ```json
